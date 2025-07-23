@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transposisi Kriptografi - Pola Plus (+)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-encrypt {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-decrypt {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .grid-container {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .grid-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .grid-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .cell {
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            min-height: 40px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .cell.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .cell.inactive {
+            background: #e9ecef;
+            color: #adb5bd;
+        }
+        
+        .result-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            min-height: 60px;
+            border: 2px solid #ddd;
+        }
+        
+        .pattern-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .pattern-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .steps {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #ffc107;
+        }
+        
+        .steps h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .steps ol {
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            margin-bottom: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Transposisi Kriptografi</h1>
+            <p>Pola Simbol Plus (+) | Columnar Transposition Cipher</p>
+        </div>
+        
+        <div class="pattern-info">
+            <h3>📋 Penjelasan Pola Plus (+)</h3>
+            <p>Pola plus menggunakan grid berbentuk silang dengan empat cabang. Text akan diisi ke dalam pola plus dan dibaca mengikuti urutan cabang: Atas → Kanan → Bawah → Kiri → Tengah (horizontal).</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="plaintext">📝 Masukkan Text (Plaintext):</label>
+                <input type="text" id="plaintext" placeholder="Contoh: HELLO WORLD CRYPTO" value="HELLO WORLD CRYPTO">
+            </div>
+            
+            <div class="input-group">
+                <label for="gridSize">📐 Ukuran Grid (ganjil, min 5):</label>
+                <input type="number" id="gridSize" min="5" max="15" step="2" value="7">
+            </div>
+            
+            <div class="buttons">
+                <button class="btn-encrypt" onclick="encrypt()">🔐 Enkripsi</button>
+                <button class="btn-decrypt" onclick="decrypt()">🔓 Dekripsi</button>
+                <button class="btn-clear" onclick="clearAll()">🗑️ Clear</button>
+            </div>
+        </div>
+        
+        <div class="grid-container">
+            <div class="grid-section">
+                <div class="grid-title">📊 Grid Input (Plus Pattern)</div>
+                <div id="inputGrid" class="grid"></div>
+            </div>
+            
+            <div class="grid-section">
+                <div class="grid-title">🔄 Grid Output (Reading Order)</div>
+                <div id="outputGrid" class="grid"></div>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <label for="result"><strong>🎯 Hasil:</strong></label>
+            <div id="result" class="result-text"></div>
+        </div>
+        
+        <div class="steps">
+            <h3>📚 Cara Kerja Algoritma:</h3>
+            <ol>
+                <li><strong>Persiapan Grid:</strong> Buat grid berukuran n×n (ganjil) dan tandai posisi yang membentuk pola plus (+)</li>
+                <li><strong>Pengisian Text:</strong> Isi karakter ke dalam pola plus secara berurutan: Atas → Kanan → Bawah → Kiri → Tengah (horizontal)</li>
+                <li><strong>Enkripsi:</strong> Baca karakter mengikuti urutan: Tengah → Atas → Kanan → Bawah → Kiri</li>
+                <li><strong>Dekripsi:</strong> Kebalikan dari enkripsi - isi dengan urutan pembacaan, baca dengan urutan pengisian</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let currentGridSize = 7;
+        let plusPattern = [];
+        let currentText = '';
+        let isEncryption = true;
+
+        function createPlusPattern(size) {
+            const pattern = [];
+            const center = Math.floor(size / 2);
+            
+            // Create plus pattern coordinates
+            // Vertical line (top to bottom)
+            for (let i = 0; i < size; i++) {
+                pattern.push([i, center]);
+            }
+            
+            // Horizontal line (left to right, skip center as it's already added)
+            for (let j = 0; j < size; j++) {
+                if (j !== center) {
+                    pattern.push([center, j]);
+                }
+            }
+            
+            return pattern;
+        }
+
+        function isPlusCell(row, col, size) {
+            const center = Math.floor(size / 2);
+            return (row === center) || (col === center);
+        }
+
+        function createGrid(containerId, size, showPattern = true) {
+            const container = document.getElementById(containerId);
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+            grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `${containerId}_${i}_${j}`;
+                    
+                    if (showPattern) {
+                        if (isPlusCell(i, j, size)) {
+                            cell.classList.add('active');
+                        } else {
+                            cell.classList.add('inactive');
+                        }
+                    }
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        function fillPlusPattern(text, size) {
+            const result = Array(size).fill().map(() => Array(size).fill(''));
+            const center = Math.floor(size / 2);
+            let textIndex = 0;
+            
+            // Remove spaces and convert to uppercase
+            const cleanText = text.replace(/\s/g, '').toUpperCase();
+            
+            // Fill order: Top → Right → Bottom → Left → Center horizontal
+            const fillOrder = [];
+            
+            // Top (excluding center)
+            for (let i = 0; i < center; i++) {
+                fillOrder.push([i, center]);
+            }
+            
+            // Right (excluding center)
+            for (let j = center + 1; j < size; j++) {
+                fillOrder.push([center, j]);
+            }
+            
+            // Bottom (excluding center)
+            for (let i = center + 1; i < size; i++) {
+                fillOrder.push([i, center]);
+            }
+            
+            // Left (excluding center)
+            for (let j = 0; j < center; j++) {
+                fillOrder.push([center, j]);
+            }
+            
+            // Center (already included in horizontal line)
+            fillOrder.push([center, center]);
+            
+            // Fill the pattern
+            for (let i = 0; i < fillOrder.length && textIndex < cleanText.length; i++) {
+                const [row, col] = fillOrder[i];
+                result[row][col] = cleanText[textIndex++];
+            }
+            
+            return { grid: result, fillOrder };
+        }
+
+        function readPlusPattern(grid, size) {
+            const center = Math.floor(size / 2);
+            let result = '';
+            
+            // Read order: Center → Top → Right → Bottom → Left
+            const readOrder = [];
+            
+            // Center
+            readOrder.push([center, center]);
+            
+            // Top
+            for (let i = 0; i < center; i++) {
+                readOrder.push([i, center]);
+            }
+            
+            // Right
+            for (let j = center + 1; j < size; j++) {
+                readOrder.push([center, j]);
+            }
+            
+            // Bottom
+            for (let i = center + 1; i < size; i++) {
+                readOrder.push([i, center]);
+            }
+            
+            // Left
+            for (let j = 0; j < center; j++) {
+                readOrder.push([center, j]);
+            }
+            
+            // Read characters
+            for (const [row, col] of readOrder) {
+                if (grid[row][col]) {
+                    result += grid[row][col];
+                }
+            }
+            
+            return result;
+        }
+
+        function displayGrid(containerId, grid, size, order = []) {
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const cell = document.getElementById(`${containerId}_${i}_${j}`);
+                    if (cell) {
+                        cell.textContent = grid[i][j] || '';
+                        
+                        if (isPlusCell(i, j, size)) {
+                            cell.classList.add('active');
+                            cell.classList.remove('inactive');
+                        } else {
+                            cell.classList.add('inactive');
+                            cell.classList.remove('active');
+                        }
+                    }
+                }
+            }
+        }
+
+        function encrypt() {
+            const text = document.getElementById('plaintext').value.trim();
+            const size = parseInt(document.getElementById('gridSize').value);
+            
+            if (!text) {
+                alert('Masukkan text yang akan dienkripsi!');
+                return;
+            }
+            
+            if (size < 5 || size % 2 === 0) {
+                alert('Ukuran grid harus ganjil dan minimal 5!');
+                return;
+            }
+            
+            currentGridSize = size;
+            currentText = text;
+            isEncryption = true;
+            
+            // Create grids
+            createGrid('inputGrid', size);
+            createGrid('outputGrid', size, false);
+            
+            // Fill plus pattern
+            const { grid, fillOrder } = fillPlusPattern(text, size);
+            displayGrid('inputGrid', grid, size);
+            
+            // Read encrypted result
+            const encrypted = readPlusPattern(grid, size);
+            
+            // Show result
+            document.getElementById('result').textContent = encrypted;
+            
+            // Create output grid to show reading order
+            const outputGrid = Array(size).fill().map(() => Array(size).fill(''));
+            const center = Math.floor(size / 2);
+            
+            // Fill output grid with reading order
+            let orderIndex = 1;
+            // Center first
+            outputGrid[center][center] = `${orderIndex++}:${grid[center][center] || ''}`;
+            
+            // Top
+            for (let i = 0; i < center; i++) {
+                if (grid[i][center]) {
+                    outputGrid[i][center] = `${orderIndex++}:${grid[i][center]}`;
+                }
+            }
+            
+            // Right
+            for (let j = center + 1; j < size; j++) {
+                if (grid[center][j]) {
+                    outputGrid[center][j] = `${orderIndex++}:${grid[center][j]}`;
+                }
+            }
+            
+            // Bottom
+            for (let i = center + 1; i < size; i++) {
+                if (grid[i][center]) {
+                    outputGrid[i][center] = `${orderIndex++}:${grid[i][center]}`;
+                }
+            }
+            
+            // Left
+            for (let j = 0; j < center; j++) {
+                if (grid[center][j]) {
+                    outputGrid[center][j] = `${orderIndex++}:${grid[center][j]}`;
+                }
+            }
+            
+            displayGrid('outputGrid', outputGrid, size);
+        }
+
+        function decrypt() {
+            const text = document.getElementById('plaintext').value.trim();
+            const size = parseInt(document.getElementById('gridSize').value);
+            
+            if (!text) {
+                alert('Masukkan text yang akan didekripsi!');
+                return;
+            }
+            
+            if (size < 5 || size % 2 === 0) {
+                alert('Ukuran grid harus ganjil dan minimal 5!');
+                return;
+            }
+            
+            currentGridSize = size;
+            isEncryption = false;
+            
+            // Create grids
+            createGrid('inputGrid', size);
+            createGrid('outputGrid', size, false);
+            
+            const cleanText = text.replace(/\s/g, '').toUpperCase();
+            const grid = Array(size).fill().map(() => Array(size).fill(''));
+            const center = Math.floor(size / 2);
+            
+            // Fill with decryption order (reverse of reading order)
+            let textIndex = 0;
+            
+            // Center first
+            if (textIndex < cleanText.length) {
+                grid[center][center] = cleanText[textIndex++];
+            }
+            
+            // Top
+            for (let i = 0; i < center && textIndex < cleanText.length; i++) {
+                grid[i][center] = cleanText[textIndex++];
+            }
+            
+            // Right
+            for (let j = center + 1; j < size && textIndex < cleanText.length; j++) {
+                grid[center][j] = cleanText[textIndex++];
+            }
+            
+            // Bottom
+            for (let i = center + 1; i < size && textIndex < cleanText.length; i++) {
+                grid[i][center] = cleanText[textIndex++];
+            }
+            
+            // Left
+            for (let j = 0; j < center && textIndex < cleanText.length; j++) {
+                grid[center][j] = cleanText[textIndex++];
+            }
+            
+            displayGrid('inputGrid', grid, size);
+            
+            // Read in original fill order for decryption
+            let decrypted = '';
+            
+            // Top
+            for (let i = 0; i < center; i++) {
+                if (grid[i][center]) decrypted += grid[i][center];
+            }
+            
+            // Right
+            for (let j = center + 1; j < size; j++) {
+                if (grid[center][j]) decrypted += grid[center][j];
+            }
+            
+            // Bottom
+            for (let i = center + 1; i < size; i++) {
+                if (grid[i][center]) decrypted += grid[i][center];
+            }
+            
+            // Left
+            for (let j = 0; j < center; j++) {
+                if (grid[center][j]) decrypted += grid[center][j];
+            }
+            
+            // Center
+            if (grid[center][center]) decrypted += grid[center][center];
+            
+            // Show result
+            document.getElementById('result').textContent = decrypted;
+            
+            // Create output grid to show original order
+            const outputGrid = Array(size).fill().map(() => Array(size).fill(''));
+            let orderIndex = 1;
+            
+            // Fill output grid with original fill order
+            for (let i = 0; i < center; i++) {
+                if (grid[i][center]) {
+                    outputGrid[i][center] = `${orderIndex++}:${grid[i][center]}`;
+                }
+            }
+            
+            for (let j = center + 1; j < size; j++) {
+                if (grid[center][j]) {
+                    outputGrid[center][j] = `${orderIndex++}:${grid[center][j]}`;
+                }
+            }
+            
+            for (let i = center + 1; i < size; i++) {
+                if (grid[i][center]) {
+                    outputGrid[i][center] = `${orderIndex++}:${grid[i][center]}`;
+                }
+            }
+            
+            for (let j = 0; j < center; j++) {
+                if (grid[center][j]) {
+                    outputGrid[center][j] = `${orderIndex++}:${grid[center][j]}`;
+                }
+            }
+            
+            if (grid[center][center]) {
+                outputGrid[center][center] = `${orderIndex++}:${grid[center][center]}`;
+            }
+            
+            displayGrid('outputGrid', outputGrid, size);
+        }
+
+        function clearAll() {
+            document.getElementById('plaintext').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('inputGrid').innerHTML = '';
+            document.getElementById('outputGrid').innerHTML = '';
+        }
+
+        // Initialize with default values
+        window.onload = function() {
+            createGrid('inputGrid', 7);
+            createGrid('outputGrid', 7, false);
+        };
+    </script>
+</body>
+</html>
